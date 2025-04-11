@@ -710,6 +710,9 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <script>
+        // Wait until DOM is fully loaded before running the script
+        document.addEventListener('DOMContentLoaded', function() {
+        
         // DOM Elements
         const hamburgerBtn = document.getElementById('hamburger-btn');
         const menu = document.getElementById('menu');
@@ -797,9 +800,22 @@
             loadSettings();
 
             // Event Listeners
-            hamburgerBtn.addEventListener('click', toggleMenu);
+            console.log('Setting up event listeners');
+            
+            // For hamburger menu
+            hamburgerBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleMenu();
+            });
+            
             overlay.addEventListener('click', closeMenu);
-            addFoodBtn.addEventListener('click', openAddFoodModal);
+            
+            // For add food button
+            addFoodBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                openAddFoodModal();
+            });
+            
             closeAddModal.addEventListener('click', closeAddFoodModal);
             addFoodForm.addEventListener('submit', handleAddFood);
             clearFoodsBtn.addEventListener('click', clearFoods);
@@ -829,6 +845,7 @@
             menu.classList.toggle('active');
             overlay.classList.toggle('active');
             document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
+            console.log('Menu toggled');
         }
 
         // Close menu
@@ -842,6 +859,7 @@
         function openAddFoodModal() {
             addFoodModal.classList.add('active');
             document.body.style.overflow = 'hidden';
+            console.log('Add food modal opened');
         }
 
         // Close add food modal
@@ -1182,3 +1200,6 @@
 
         // Initialize the app
         init();
+        
+        // End of DOMContentLoaded event listener
+        });
