@@ -3,697 +3,1182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Calorie & Macro Tracker</title>
+    <title>NutriTrack - Modern Calorie Tracker</title>
     <style>
         :root {
-            --primary: #3498db;
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --danger: #e74c3c;
-            --dark: #2c3e50;
-            --light: #ecf0f1;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #f3f4f6;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --background: #ffffff;
+            --card-bg: #f9fafb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
-        
+
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
-        
+
         body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
+
         header {
-            background-color: var(--primary);
-            color: white;
-            padding: 20px 0;
-            border-radius: 10px 10px 0 0;
-            margin-bottom: 20px;
-            text-align: center;
+            background-color: var(--background);
+            padding: 1rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        
+
         .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-        }
-        
-        h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-        
-        .time-display {
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        
-        .card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .card-title {
-            margin-bottom: 15px;
-            color: var(--dark);
-            font-size: 18px;
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
-        .card-title button {
-            font-size: 14px;
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: var(--dark);
-        }
-        
-        input[type="number"],
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        
-        input[type="number"]:focus,
-        input[type="text"]:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-        
-        button {
-            background-color: var(--primary);
-            color: white;
+
+        .hamburger {
+            background: none;
             border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.2s;
-        }
-        
-        button:hover {
-            background-color: #2980b9;
-        }
-        
-        .btn-success {
-            background-color: var(--success);
-        }
-        
-        .btn-success:hover {
-            background-color: #27ae60;
-        }
-        
-        .btn-danger {
-            background-color: var(--danger);
-        }
-        
-        .btn-danger:hover {
-            background-color: #c0392b;
-        }
-        
-        .columns {
             display: flex;
-            gap: 20px;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 20px;
+            position: relative;
+            z-index: 20;
         }
-        
-        .column {
+
+        .hamburger div {
+            width: 100%;
+            height: 2px;
+            background-color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 250px;
+            height: 100vh;
+            background-color: var(--background);
+            box-shadow: var(--shadow);
+            padding: 4rem 2rem;
+            transition: right 0.3s ease;
+            z-index: 15;
+        }
+
+        .menu.active {
+            right: 0;
+        }
+
+        .menu ul {
+            list-style: none;
+        }
+
+        .menu ul li {
+            margin: 1rem 0;
+        }
+
+        .menu ul li a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .menu ul li a:hover {
+            color: var(--primary);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 14;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        main {
             flex: 1;
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
         }
-        
-        @media (max-width: 768px) {
-            .columns {
-                flex-direction: column;
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
             }
         }
-        
-        .progress-container {
-            margin-bottom: 15px;
+
+        @media (min-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
         }
-        
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .progress-container {
+            margin-top: 1rem;
+        }
+
         .progress-label {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
         }
-        
+
         .progress-bar {
             height: 8px;
-            background-color: #eee;
+            background-color: var(--secondary);
             border-radius: 4px;
             overflow: hidden;
         }
-        
+
         .progress-fill {
             height: 100%;
-            background-color: var(--primary);
+            border-radius: 4px;
             transition: width 0.3s ease;
         }
-        
+
         .progress-fill.calories {
             background-color: var(--primary);
         }
-        
+
         .progress-fill.protein {
             background-color: var(--success);
         }
-        
+
         .progress-fill.carbs {
             background-color: var(--warning);
         }
-        
+
         .progress-fill.fat {
             background-color: var(--danger);
         }
-        
-        .summary-item {
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            padding: 1rem;
+            background-color: var(--background);
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
-        
-        .summary-item:last-child {
-            border-bottom: none;
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
         }
-        
-        .food-log {
-            max-height: 300px;
+
+        .modal-content {
+            background-color: var(--background);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
             overflow-y: auto;
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
         }
-        
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .food-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
         .food-item {
             display: flex;
             justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 0.5rem;
+            background-color: var(--card-bg);
         }
-        
-        .food-item:hover {
-            background-color: #f9f9f9;
-        }
-        
+
         .food-info {
             flex: 1;
         }
-        
+
         .food-name {
-            font-weight: bold;
+            font-weight: 500;
         }
-        
-        .food-macros {
-            font-size: 12px;
-            color: #777;
+
+        .food-macro {
+            font-size: 0.8rem;
+            color: var(--text-light);
         }
-        
-        .food-calories {
-            font-weight: bold;
-            margin-left: 15px;
-        }
-        
+
         .food-actions {
-            margin-left: 10px;
+            display: flex;
+            gap: 0.5rem;
         }
-        
-        .delete-btn {
+
+        .food-actions button {
             background: none;
             border: none;
-            color: var(--danger);
             cursor: pointer;
-            font-size: 18px;
-            padding: 0 5px;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+
+        .food-actions button:hover {
+            color: var(--danger);
+        }
+
+        .tab-group {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .scanner-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        #scanner-preview {
+            width: 100%;
+            max-width: 300px;
+            height: 200px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .scanner-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .food-suggestions {
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .suggestion-item {
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            background-color: var(--card-bg);
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .suggestion-item:hover {
+            background-color: #e5e7eb;
+        }
+
+        @media (max-width: 767px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="header-content">
-                <h1>Daily Calorie & Macro Tracker</h1>
-                <div class="time-display" id="timeDisplay"></div>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+                    <path d="M7 2v20"></path>
+                    <path d="M21 15V2"></path>
+                    <path d="M18 15a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"></path>
+                    <path d="M18 8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"></path>
+                </svg>
+                NutriTrack
             </div>
-        </header>
-        
-        <div class="columns">
-            <div class="column">
-                <div class="card" id="goals-card">
-                    <div class="card-title">
-                        <h2>Goals</h2>
-                        <button id="editGoalsBtn">Edit</button>
-                    </div>
-                    <div id="goalsDisplay">
-                        <div class="summary-item">
-                            <span>Calories:</span>
-                            <span id="calorieGoal">2000</span>
-                        </div>
-                        <div class="summary-item">
-                            <span>Protein:</span>
-                            <span id="proteinGoal">150g</span>
-                        </div>
-                        <div class="summary-item">
-                            <span>Carbs:</span>
-                            <span id="carbsGoal">250g</span>
-                        </div>
-                        <div class="summary-item">
-                            <span>Fat:</span>
-                            <span id="fatGoal">70g</span>
-                        </div>
-                    </div>
-                    <form id="goalsForm" style="display: none;">
-                        <div class="form-group">
-                            <label for="calories">Daily Calories:</label>
-                            <input type="number" id="calories" min="1000" max="10000" step="50" value="2000">
-                        </div>
-                        <div class="form-group">
-                            <label for="protein">Protein (g):</label>
-                            <input type="number" id="protein" min="10" max="500" step="5" value="150">
-                        </div>
-                        <div class="form-group">
-                            <label for="carbs">Carbs (g):</label>
-                            <input type="number" id="carbs" min="10" max="1000" step="5" value="250">
-                        </div>
-                        <div class="form-group">
-                            <label for="fat">Fat (g):</label>
-                            <input type="number" id="fat" min="10" max="300" step="5" value="70">
-                        </div>
-                        <button type="submit" class="btn-success">Save Goals</button>
-                    </form>
+            <button class="hamburger" id="hamburger-btn">
+                <div></div>
+                <div></div>
+                <div></div>
+            </button>
+        </div>
+    </header>
+
+    <div class="menu" id="menu">
+        <ul>
+            <li><a href="https://iamdusty.github.io/Workout/" target="_blank">Fitness</a></li>
+            <li><a href="#" id="settings-link">Settings</a></li>
+        </ul>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <main>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">
+                    Today's Progress
+                    <button id="add-food-btn">+ Add Food</button>
                 </div>
-                
-                <div class="card">
-                    <div class="card-title">
-                        <h2>Add Food</h2>
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Calories</span>
+                        <span><span id="current-calories">0</span>/<span id="goal-calories">2000</span> kcal</span>
                     </div>
-                    <form id="addFoodForm">
-                        <div class="form-group">
-                            <label for="foodName">Food Name:</label>
-                            <input type="text" id="foodName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="foodCalories">Calories:</label>
-                            <input type="number" id="foodCalories" min="0" step="1" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="foodProtein">Protein (g):</label>
-                            <input type="number" id="foodProtein" min="0" step="0.1" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="foodCarbs">Carbs (g):</label>
-                            <input type="number" id="foodCarbs" min="0" step="0.1" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="foodFat">Fat (g):</label>
-                            <input type="number" id="foodFat" min="0" step="0.1" value="0">
-                        </div>
-                        <button type="submit" class="btn-success">Add Food</button>
-                    </form>
+                    <div class="progress-bar">
+                        <div class="progress-fill calories" id="calories-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Protein</span>
+                        <span><span id="current-protein">0</span>/<span id="goal-protein">150</span> g</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill protein" id="protein-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Carbs</span>
+                        <span><span id="current-carbs">0</span>/<span id="goal-carbs">225</span> g</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill carbs" id="carbs-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Fat</span>
+                        <span><span id="current-fat">0</span>/<span id="goal-fat">65</span> g</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill fat" id="fat-progress" style="width: 0%"></div>
+                    </div>
                 </div>
             </div>
+
+            <div class="card">
+                <div class="card-title">
+                    Remaining
+                </div>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="remaining-calories">2000</div>
+                        <div class="stat-label">Calories</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="remaining-protein">150</div>
+                        <div class="stat-label">Protein (g)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="remaining-carbs">225</div>
+                        <div class="stat-label">Carbs (g)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="remaining-fat">65</div>
+                        <div class="stat-label">Fat (g)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    Today's Food
+                    <button id="clear-foods-btn">Clear All</button>
+                </div>
+                <ul class="food-list" id="food-list">
+                    <!-- Food items will be added here dynamically -->
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Food Modal -->
+    <div class="modal" id="add-food-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="close-add-modal">&times;</button>
+            <h2 class="modal-title">Add Food</h2>
             
-            <div class="column">
-                <div class="card">
-                    <div class="card-title">
-                        <h2>Daily Progress</h2>
-                        <span id="resetCountdown"></span>
+            <div class="tab-group">
+                <div class="tab active" data-tab="manual">Manual Entry</div>
+                <div class="tab" data-tab="scan">Scan Barcode</div>
+                <div class="tab" data-tab="search">Search</div>
+            </div>
+
+            <div class="tab-content active" id="manual-tab">
+                <form id="add-food-form">
+                    <div class="form-group">
+                        <label for="food-name">Food Name</label>
+                        <input type="text" id="food-name" class="form-control" required>
                     </div>
-                    
-                    <div class="progress-container">
-                        <div class="progress-label">
-                            <span>Calories</span>
-                            <span id="calorieProgress">0 / 2000</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill calories" id="calorieBar" style="width: 0%"></div>
-                        </div>
+                    <div class="form-group">
+                        <label for="food-calories">Calories</label>
+                        <input type="number" id="food-calories" class="form-control" required>
                     </div>
-                    
-                    <div class="progress-container">
-                        <div class="progress-label">
-                            <span>Protein</span>
-                            <span id="proteinProgress">0g / 150g</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill protein" id="proteinBar" style="width: 0%"></div>
-                        </div>
+                    <div class="form-group">
+                        <label for="food-protein">Protein (g)</label>
+                        <input type="number" id="food-protein" class="form-control" required>
                     </div>
-                    
-                    <div class="progress-container">
-                        <div class="progress-label">
-                            <span>Carbs</span>
-                            <span id="carbsProgress">0g / 250g</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill carbs" id="carbsBar" style="width: 0%"></div>
-                        </div>
+                    <div class="form-group">
+                        <label for="food-carbs">Carbs (g)</label>
+                        <input type="number" id="food-carbs" class="form-control" required>
                     </div>
-                    
-                    <div class="progress-container">
-                        <div class="progress-label">
-                            <span>Fat</span>
-                            <span id="fatProgress">0g / 70g</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill fat" id="fatBar" style="width: 0%"></div>
-                        </div>
+                    <div class="form-group">
+                        <label for="food-fat">Fat (g)</label>
+                        <input type="number" id="food-fat" class="form-control" required>
                     </div>
-                    
-                    <div class="summary">
-                        <div class="summary-item">
-                            <span>Remaining Calories:</span>
-                            <span id="remainingCalories">2000</span>
-                        </div>
-                        <div class="summary-item">
-                            <span>Remaining Protein:</span>
-                            <span id="remainingProtein">150g</span>
-                        </div>
-                        <div class="summary-item">
-                            <span>Remaining Carbs:</span>
-                            <span id="remainingCarbs">250g</span>
-                        </div>
-                        <div class="summary-item">
-                            <span>Remaining Fat:</span>
-                            <span id="remainingFat">70g</span>
-                        </div>
+                    <button type="submit" class="btn btn-primary btn-block">Add Food</button>
+                </form>
+            </div>
+
+            <div class="tab-content" id="scan-tab">
+                <div class="scanner-container">
+                    <video id="scanner-preview"></video>
+                    <div class="scanner-buttons">
+                        <button id="start-scan" class="btn btn-primary">Start Scanner</button>
+                        <button id="stop-scan" class="btn btn-outline">Stop Scanner</button>
                     </div>
                 </div>
-                
-                <div class="card">
-                    <div class="card-title">
-                        <h2>Food Log</h2>
-                        <button id="clearLogBtn" class="btn-danger">Clear Log</button>
+                <p id="scan-result"></p>
+                <div id="scan-food-details" style="display: none;">
+                    <div class="form-group">
+                        <label for="scanned-food-name">Food Name</label>
+                        <input type="text" id="scanned-food-name" class="form-control" readonly>
                     </div>
-                    <div class="food-log" id="foodLog">
-                        <!-- Food items will be added here dynamically -->
+                    <div class="form-group">
+                        <label for="scanned-food-calories">Calories</label>
+                        <input type="number" id="scanned-food-calories" class="form-control">
                     </div>
+                    <div class="form-group">
+                        <label for="scanned-food-protein">Protein (g)</label>
+                        <input type="number" id="scanned-food-protein" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="scanned-food-carbs">Carbs (g)</label>
+                        <input type="number" id="scanned-food-carbs" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="scanned-food-fat">Fat (g)</label>
+                        <input type="number" id="scanned-food-fat" class="form-control">
+                    </div>
+                    <button id="add-scanned-food" class="btn btn-primary btn-block">Add Food</button>
+                </div>
+            </div>
+
+            <div class="tab-content" id="search-tab">
+                <div class="form-group">
+                    <label for="food-search">Search Food</label>
+                    <input type="text" id="food-search" class="form-control" placeholder="e.g. apple, chicken breast">
+                </div>
+                <div class="food-suggestions" id="food-suggestions">
+                    <!-- Food suggestions will be displayed here -->
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="close-settings-modal">&times;</button>
+            <h2 class="modal-title">Settings</h2>
+            <form id="settings-form">
+                <div class="form-group">
+                    <label for="goal-calories-input">Daily Calorie Goal</label>
+                    <input type="number" id="goal-calories-input" class="form-control" value="2000">
+                </div>
+                <div class="form-group">
+                    <label for="goal-protein-input">Daily Protein Goal (g)</label>
+                    <input type="number" id="goal-protein-input" class="form-control" value="150">
+                </div>
+                <div class="form-group">
+                    <label for="goal-carbs-input">Daily Carbs Goal (g)</label>
+                    <input type="number" id="goal-carbs-input" class="form-control" value="225">
+                </div>
+                <div class="form-group">
+                    <label for="goal-fat-input">Daily Fat Goal (g)</label>
+                    <input type="number" id="goal-fat-input" class="form-control" value="65">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Save Settings</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <script>
-        // State management
-        const state = {
-            goals: {
-                calories: 2000,
-                protein: 150,
-                carbs: 250,
-                fat: 70
-            },
-            consumed: {
-                calories: 0,
-                protein: 0,
-                carbs: 0,
-                fat: 0
-            },
-            foods: [],
-            lastReset: new Date().setHours(0, 0, 0, 0)
-        };
+        // DOM Elements
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const menu = document.getElementById('menu');
+        const overlay = document.getElementById('overlay');
+        const addFoodBtn = document.getElementById('add-food-btn');
+        const addFoodModal = document.getElementById('add-food-modal');
+        const closeAddModal = document.getElementById('close-add-modal');
+        const addFoodForm = document.getElementById('add-food-form');
+        const foodList = document.getElementById('food-list');
+        const clearFoodsBtn = document.getElementById('clear-foods-btn');
+        const settingsLink = document.getElementById('settings-link');
+        const settingsModal = document.getElementById('settings-modal');
+        const closeSettingsModal = document.getElementById('close-settings-modal');
+        const settingsForm = document.getElementById('settings-form');
+        
+        // Tab elements
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Scanner elements
+        const startScanBtn = document.getElementById('start-scan');
+        const stopScanBtn = document.getElementById('stop-scan');
+        const scannerPreview = document.getElementById('scanner-preview');
+        const scanResult = document.getElementById('scan-result');
+        const scanFoodDetails = document.getElementById('scan-food-details');
+        const addScannedFoodBtn = document.getElementById('add-scanned-food');
+        
+        // Search elements
+        const foodSearch = document.getElementById('food-search');
+        const foodSuggestions = document.getElementById('food-suggestions');
 
-        // Load data from local storage
-        function loadData() {
-            const savedData = localStorage.getItem('calorieTracker');
-            if (savedData) {
-                const parsedData = JSON.parse(savedData);
-                
-                // Check if we need to reset (new day)
-                const now = new Date().setHours(0, 0, 0, 0);
-                if (now > parsedData.lastReset) {
-                    // It's a new day, reset consumed values and food log
-                    parsedData.consumed = {
-                        calories: 0,
-                        protein: 0,
-                        carbs: 0,
-                        fat: 0
-                    };
-                    parsedData.foods = [];
-                    parsedData.lastReset = now;
-                }
-                
-                // Update state with saved data
-                Object.assign(state, parsedData);
-            }
+        // Progress elements
+        const currentCalories = document.getElementById('current-calories');
+        const goalCalories = document.getElementById('goal-calories');
+        const caloriesProgress = document.getElementById('calories-progress');
+        const currentProtein = document.getElementById('current-protein');
+        const goalProtein = document.getElementById('goal-protein');
+        const proteinProgress = document.getElementById('protein-progress');
+        const currentCarbs = document.getElementById('current-carbs');
+        const goalCarbs = document.getElementById('goal-carbs');
+        const carbsProgress = document.getElementById('carbs-progress');
+        const currentFat = document.getElementById('current-fat');
+        const goalFat = document.getElementById('goal-fat');
+        const fatProgress = document.getElementById('fat-progress');
+        
+        // Remaining elements
+        const remainingCalories = document.getElementById('remaining-calories');
+        const remainingProtein = document.getElementById('remaining-protein');
+        const remainingCarbs = document.getElementById('remaining-carbs');
+        const remainingFat = document.getElementById('remaining-fat');
+
+        // Settings form elements
+        const goalCaloriesInput = document.getElementById('goal-calories-input');
+        const goalProteinInput = document.getElementById('goal-protein-input');
+        const goalCarbsInput = document.getElementById('goal-carbs-input');
+        const goalFatInput = document.getElementById('goal-fat-input');
+
+        // State
+        let foods = JSON.parse(localStorage.getItem('foods')) || [];
+        let goals = JSON.parse(localStorage.getItem('goals')) || {
+            calories: 2000,
+            protein: 150,
+            carbs: 225,
+            fat: 65
+        };
+        let scanner = null;
+
+        // Food database for search (simplified)
+        const foodDatabase = [
+            { name: 'Apple', calories: 95, protein: 0.5, carbs: 25, fat: 0.3 },
+            { name: 'Banana', calories: 105, protein: 1.3, carbs: 27, fat: 0.4 },
+            { name: 'Chicken Breast (100g)', calories: 165, protein: 31, carbs: 0, fat: 3.6 },
+            { name: 'Egg', calories: 68, protein: 5.7, carbs: 0.6, fat: 4.8 },
+            { name: 'Salmon (100g)', calories: 208, protein: 20, carbs: 0, fat: 13 },
+            { name: 'Brown Rice (100g, cooked)', calories: 112, protein: 2.6, carbs: 24, fat: 0.9 },
+            { name: 'Broccoli (100g)', calories: 31, protein: 2.5, carbs: 6, fat: 0.3 },
+            { name: 'Greek Yogurt (100g)', calories: 59, protein: 10, carbs: 3.6, fat: 0.4 },
+            { name: 'Avocado (100g)', calories: 160, protein: 2, carbs: 8.5, fat: 14.7 },
+            { name: 'Almonds (28g)', calories: 164, protein: 6, carbs: 6, fat: 14 }
+        ];
+
+        // Initialize
+        function init() {
+            updateUI();
+            loadSettings();
+
+            // Event Listeners
+            hamburgerBtn.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', closeMenu);
+            addFoodBtn.addEventListener('click', openAddFoodModal);
+            closeAddModal.addEventListener('click', closeAddFoodModal);
+            addFoodForm.addEventListener('submit', handleAddFood);
+            clearFoodsBtn.addEventListener('click', clearFoods);
+            settingsLink.addEventListener('click', openSettingsModal);
+            closeSettingsModal.addEventListener('click', closeSettingsModal);
+            settingsForm.addEventListener('submit', saveSettings);
             
-            // Update UI with loaded data
+            // Tab events
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // Scanner events
+            startScanBtn.addEventListener('click', startScanner);
+            stopScanBtn.addEventListener('click', stopScanner);
+            addScannedFoodBtn.addEventListener('click', addScannedFood);
+            
+            // Search events
+            foodSearch.addEventListener('input', handleFoodSearch);
+        }
+
+        // Toggle menu
+        function toggleMenu() {
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
+        }
+
+        // Close menu
+        function closeMenu() {
+            menu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Open add food modal
+        function openAddFoodModal() {
+            addFoodModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close add food modal
+        function closeAddFoodModal() {
+            addFoodModal.classList.remove('active');
+            document.body.style.overflow = '';
+            stopScanner();
+            addFoodForm.reset();
+            scanResult.textContent = '';
+            scanFoodDetails.style.display = 'none';
+        }
+
+        // Open settings modal
+        function openSettingsModal() {
+            settingsModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close settings modal
+        function closeSettingsModal() {
+            settingsModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Switch tabs
+        function switchTab(tabId) {
+            tabs.forEach(tab => {
+                if (tab.getAttribute('data-tab') === tabId) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            tabContents.forEach(content => {
+                if (content.id === `${tabId}-tab`) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+
+            if (tabId === 'scan') {
+                // Reset scan elements
+                scanResult.textContent = '';
+                scanFoodDetails.style.display = 'none';
+            }
+        }
+
+        // Start barcode scanner
+        function startScanner() {
+            if (scanner) {
+                return;
+            }
+
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: scannerPreview,
+                    constraints: {
+                        width: 480,
+                        height: 320,
+                        facingMode: "environment"
+                    },
+                },
+                decoder: {
+                    readers: ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"]
+                }
+            }, function(err) {
+                if (err) {
+                    scanResult.textContent = `Scanner error: ${err}`;
+                    return;
+                }
+                Quagga.start();
+                scanner = true;
+            });
+
+            Quagga.onDetected(function(result) {
+                const code = result.codeResult.code;
+                scanResult.textContent = `Barcode detected: ${code}`;
+                
+                // Mock API call - in a real app, you'd query a food database API
+                mockFetchFoodData(code);
+                
+                // Stop scanner after successful detection
+                stopScanner();
+            });
+        }
+
+        // Stop barcode scanner
+        function stopScanner() {
+            if (scanner) {
+                Quagga.stop();
+                scanner = null;
+            }
+        }
+
+        // Mock fetching food data by barcode
+        function mockFetchFoodData(barcode) {
+            // In a real app, you'd make an API call to a food database
+            // For demo purposes, we'll simulate a response with random data
+            setTimeout(() => {
+                // Simulate finding a food item
+                const mockFood = {
+                    name: `Food Item (${barcode.slice(-4)})`,
+                    calories: Math.floor(Math.random() * 500) + 50,
+                    protein: Math.floor(Math.random() * 30) + 1,
+                    carbs: Math.floor(Math.random() * 50) + 5,
+                    fat: Math.floor(Math.random() * 20) + 1
+                };
+                
+                // Display the food details in the form
+                document.getElementById('scanned-food-name').value = mockFood.name;
+                document.getElementById('scanned-food-calories').value = mockFood.calories;
+                document.getElementById('scanned-food-protein').value = mockFood.protein;
+                document.getElementById('scanned-food-carbs').value = mockFood.carbs;
+                document.getElementById('scanned-food-fat').value = mockFood.fat;
+                
+                // Show the form
+                scanFoodDetails.style.display = 'block';
+            }, 1000);
+        }
+
+        // Add scanned food
+        function addScannedFood() {
+            const foodName = document.getElementById('scanned-food-name').value;
+            const calories = parseInt(document.getElementById('scanned-food-calories').value);
+            const protein = parseFloat(document.getElementById('scanned-food-protein').value);
+            const carbs = parseFloat(document.getElementById('scanned-food-carbs').value);
+            const fat = parseFloat(document.getElementById('scanned-food-fat').value);
+            
+            if (foodName && !isNaN(calories) && !isNaN(protein) && !isNaN(carbs) && !isNaN(fat)) {
+                addFood({
+                    id: Date.now(),
+                    name: foodName,
+                    calories,
+                    protein,
+                    carbs,
+                    fat
+                });
+                
+                closeAddFoodModal();
+            }
+        }
+
+        // Handle food search
+        function handleFoodSearch() {
+            const query = foodSearch.value.toLowerCase();
+            foodSuggestions.innerHTML = '';
+            
+            if (query.length < 2) return;
+            
+            const filteredFoods = foodDatabase.filter(food => 
+                food.name.toLowerCase().includes(query)
+            );
+            
+            filteredFoods.forEach(food => {
+                const suggestionItem = document.createElement('div');
+                suggestionItem.classList.add('suggestion-item');
+                suggestionItem.innerHTML = `
+                    <div class="food-name">${food.name}</div>
+                    <div class="food-macro">${food.calories} kcal | P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
+                `;
+                
+                suggestionItem.addEventListener('click', () => {
+                    addFood({
+                        id: Date.now(),
+                        name: food.name,
+                        calories: food.calories,
+                        protein: food.protein,
+                        carbs: food.carbs,
+                        fat: food.fat
+                    });
+                    
+                    closeAddFoodModal();
+                });
+                
+                foodSuggestions.appendChild(suggestionItem);
+            });
+        }
+
+        // Handle add food form submit
+        function handleAddFood(e) {
+            e.preventDefault();
+            
+            const foodName = document.getElementById('food-name').value;
+            const calories = parseInt(document.getElementById('food-calories').value);
+            const protein = parseFloat(document.getElementById('food-protein').value);
+            const carbs = parseFloat(document.getElementById('food-carbs').value);
+            const fat = parseFloat(document.getElementById('food-fat').value);
+            
+            if (foodName && !isNaN(calories) && !isNaN(protein) && !isNaN(carbs) && !isNaN(fat)) {
+                addFood({
+                    id: Date.now(),
+                    name: foodName,
+                    calories,
+                    protein,
+                    carbs,
+                    fat
+                });
+                
+                addFoodForm.reset();
+                closeAddFoodModal();
+            }
+        }
+
+        // Add food to the list
+        function addFood(food) {
+            foods.push(food);
+            saveFoods();
             updateUI();
         }
 
-        // Save data to local storage
-        function saveData() {
-            localStorage.setItem('calorieTracker', JSON.stringify(state));
+        // Remove food from the list
+        function removeFood(id) {
+            foods = foods.filter(food => food.id !== id);
+            saveFoods();
+            updateUI();
         }
 
-        // Update the UI based on the current state
-        function updateUI() {
-            // Update goals display
-            document.getElementById('calorieGoal').textContent = state.goals.calories;
-            document.getElementById('proteinGoal').textContent = state.goals.protein + 'g';
-            document.getElementById('carbsGoal').textContent = state.goals.carbs + 'g';
-            document.getElementById('fatGoal').textContent = state.goals.fat + 'g';
+        // Clear all foods
+        function clearFoods() {
+            if (confirm('Are you sure you want to clear all foods?')) {
+                foods = [];
+                saveFoods();
+                updateUI();
+            }
+        }
+
+        // Save foods to localStorage
+        function saveFoods() {
+            localStorage.setItem('foods', JSON.stringify(foods));
+        }
+
+        // Save goals to localStorage
+        function saveGoals() {
+            localStorage.setItem('goals', JSON.stringify(goals));
+        }
+
+        // Load settings
+        function loadSettings() {
+            goalCaloriesInput.value = goals.calories;
+            goalProteinInput.value = goals.protein;
+            goalCarbsInput.value = goals.carbs;
+            goalFatInput.value = goals.fat;
+        }
+
+        // Save settings
+        function saveSettings(e) {
+            e.preventDefault();
             
-            // Update form values
-            document.getElementById('calories').value = state.goals.calories;
-            document.getElementById('protein').value = state.goals.protein;
-            document.getElementById('carbs').value = state.goals.carbs;
-            document.getElementById('fat').value = state.goals.fat;
+            goals = {
+                calories: parseInt(goalCaloriesInput.value) || 2000,
+                protein: parseInt(goalProteinInput.value) || 150,
+                carbs: parseInt(goalCarbsInput.value) || 225,
+                fat: parseInt(goalFatInput.value) || 65
+            };
+            
+            saveGoals();
+            updateUI();
+            closeSettingsModal();
+        }
+
+        // Update UI with current data
+        function updateUI() {
+            // Calculate totals
+            const totals = foods.reduce((acc, food) => {
+                acc.calories += food.calories;
+                acc.protein += food.protein;
+                acc.carbs += food.carbs;
+                acc.fat += food.fat;
+                return acc;
+            }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
             
             // Update progress
-            document.getElementById('calorieProgress').textContent = `${state.consumed.calories} / ${state.goals.calories}`;
-            document.getElementById('proteinProgress').textContent = `${state.consumed.protein}g / ${state.goals.protein}g`;
-            document.getElementById('carbsProgress').textContent = `${state.consumed.carbs}g / ${state.goals.carbs}g`;
-            document.getElementById('fatProgress').textContent = `${state.consumed.fat}g / ${state.goals.fat}g`;
+            currentCalories.textContent = totals.calories;
+            goalCalories.textContent = goals.calories;
+            caloriesProgress.style.width = `${Math.min(100, (totals.calories / goals.calories) * 100)}%`;
             
-            // Update progress bars
-            const caloriePercentage = Math.min(100, (state.consumed.calories / state.goals.calories) * 100);
-            const proteinPercentage = Math.min(100, (state.consumed.protein / state.goals.protein) * 100);
-            const carbsPercentage = Math.min(100, (state.consumed.carbs / state.goals.carbs) * 100);
-            const fatPercentage = Math.min(100, (state.consumed.fat / state.goals.fat) * 100);
+            currentProtein.textContent = totals.protein;
+            goalProtein.textContent = goals.protein;
+            proteinProgress.style.width = `${Math.min(100, (totals.protein / goals.protein) * 100)}%`;
             
-            document.getElementById('calorieBar').style.width = caloriePercentage + '%';
-            document.getElementById('proteinBar').style.width = proteinPercentage + '%';
-            document.getElementById('carbsBar').style.width = carbsPercentage + '%';
-            document.getElementById('fatBar').style.width = fatPercentage + '%';
+            currentCarbs.textContent = totals.carbs;
+            goalCarbs.textContent = goals.carbs;
+            carbsProgress.style.width = `${Math.min(100, (totals.carbs / goals.carbs) * 100)}%`;
             
-            // Update remaining values
-            document.getElementById('remainingCalories').textContent = Math.max(0, state.goals.calories - state.consumed.calories);
-            document.getElementById('remainingProtein').textContent = Math.max(0, state.goals.protein - state.consumed.protein) + 'g';
-            document.getElementById('remainingCarbs').textContent = Math.max(0, state.goals.carbs - state.consumed.carbs) + 'g';
-            document.getElementById('remainingFat').textContent = Math.max(0, state.goals.fat - state.consumed.fat) + 'g';
+            currentFat.textContent = totals.fat;
+            goalFat.textContent = goals.fat;
+            fatProgress.style.width = `${Math.min(100, (totals.fat / goals.fat) * 100)}%`;
             
-            // Update food log
-            renderFoodLog();
-        }
-
-        // Render food log
-        function renderFoodLog() {
-            const foodLogElement = document.getElementById('foodLog');
-            foodLogElement.innerHTML = '';
+            // Update remaining
+            remainingCalories.textContent = Math.max(0, goals.calories - totals.calories);
+            remainingProtein.textContent = Math.max(0, goals.protein - totals.protein);
+            remainingCarbs.textContent = Math.max(0, goals.carbs - totals.carbs);
+            remainingFat.textContent = Math.max(0, goals.fat - totals.fat);
             
-            if (state.foods.length === 0) {
-                foodLogElement.innerHTML = '<div class="food-item">No foods logged today</div>';
+            // Update food list
+            foodList.innerHTML = '';
+            
+            if (foods.length === 0) {
+                const emptyMessage = document.createElement('li');
+                emptyMessage.textContent = 'No foods added today. Click "Add Food" to get started.';
+                emptyMessage.style.padding = '0.75rem';
+                emptyMessage.style.color = 'var(--text-light)';
+                foodList.appendChild(emptyMessage);
                 return;
             }
             
-            state.foods.forEach((food, index) => {
-                const foodItem = document.createElement('div');
-                foodItem.className = 'food-item';
-                
+            foods.forEach(food => {
+                const foodItem = document.createElement('li');
+                foodItem.classList.add('food-item');
                 foodItem.innerHTML = `
                     <div class="food-info">
                         <div class="food-name">${food.name}</div>
-                        <div class="food-macros">P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
+                        <div class="food-macro">${food.calories} kcal | P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
                     </div>
-                    <div class="food-calories">${food.calories} cal</div>
                     <div class="food-actions">
-                        <button class="delete-btn" data-index="${index}">×</button>
+                        <button data-id="${food.id}" class="remove-food">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 6h18"></path>
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                            </svg>
+                        </button>
                     </div>
                 `;
                 
-                foodLogElement.appendChild(foodItem);
-            });
-            
-            // Add event listeners to delete buttons
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    removeFood(index);
+                const removeBtn = foodItem.querySelector('.remove-food');
+                removeBtn.addEventListener('click', () => {
+                    removeFood(food.id);
                 });
+                
+                foodList.appendChild(foodItem);
             });
         }
 
-        // Add food to log
-        function addFood(food) {
-            state.foods.push(food);
-            
-            // Update consumed values
-            state.consumed.calories += food.calories;
-            state.consumed.protein += food.protein;
-            state.consumed.carbs += food.carbs;
-            state.consumed.fat += food.fat;
-            
-            // Update UI and save data
-            updateUI();
-            saveData();
-        }
-
-        // Remove food from log
-        function removeFood(index) {
-            const food = state.foods[index];
-            
-            // Update consumed values
-            state.consumed.calories -= food.calories;
-            state.consumed.protein -= food.protein;
-            state.consumed.carbs -= food.carbs;
-            state.consumed.fat -= food.fat;
-            
-            // Remove food from array
-            state.foods.splice(index, 1);
-            
-            // Update UI and save data
-            updateUI();
-            saveData();
-        }
-
-        // Clear food log
-        function clearFoodLog() {
-            if (confirm('Are you sure you want to clear your food log?')) {
-                state.foods = [];
-                state.consumed = {
-                    calories: 0,
-                    protein: 0,
-                    carbs: 0,
-                    fat: 0
-                };
-                
-                // Update UI and save data
-                updateUI();
-                saveData();
-            }
-        }
-
-        // Update time display and check for midnight reset
-        function updateTimeDisplay() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('timeDisplay').textContent = timeString;
-            
-            // Calculate time until midnight for reset countdown
-            const tomorrow = new Date(now);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(0, 0, 0, 0);
-            
-            const timeUntilMidnight = tomorrow - now;
-            const hoursUntilMidnight = Math.floor(timeUntilMidnight / (1000 * 60 * 60));
-            const minutesUntilMidnight = Math.floor((timeUntilMidnight % (1000 * 60 * 60)) / (1000 * 60));
-            
-            document.getElementById('resetCountdown').textContent = `Resets in ${hoursUntilMidnight}h ${minutesUntilMidnight}m`;
-            
-            // Check if we need to reset (new day)
-            const todayStart = new Date(now).setHours(0, 0, 0, 0);
-            if (todayStart > state.lastReset) {
-                // It's a new day, reset consumed values and food log
-                state.consumed = {
-                    calories: 0,
-                    protein: 0,
-                    carbs: 0,
-                    fat: 0
-                };
-                state.foods = [];
-                state.lastReset = todayStart;
-                
-                // Update UI and save data
-                updateUI();
-                saveData();
-            }
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load saved data
-            loadData();
-            
-            // Set up event listeners
-            document.getElementById('editGoalsBtn').addEventListener('click', function() {
-                document.getElementById('goalsDisplay').style.display = 'none';
-                document.getElementById('goalsForm').style.display = 'block';
-                this.style.display = 'none';
-            });
-            
-            document.getElementById('goalsForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Update goals
-                state.goals = {
-                    calories: parseInt(document.getElementById('calories').value),
-                    protein: parseInt(document.getElementById('protein').value),
-                    carbs: parseInt(document.getElementById('carbs').value),
-                    fat: parseInt(document.getElementById('fat').value)
-                };
-                
-                // Hide form, show display
-                document.getElementById('goalsDisplay').style.display = 'block';
-                document.getElementById('goalsForm').style.display = 'none';
-                document.getElementById('editGoalsBtn').style.display = 'block';
-                
-                // Update UI and save data
-                updateUI();
-                saveData();
-            });
-            
-            document.getElementById('addFoodForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Get form values
-                const food = {
-                    name: document.getElementById('foodName').value,
-                    calories: parseInt(document.getElementById('foodCalories').value),
-                    protein: parseFloat(document.getElementById('foodProtein').value),
-                    carbs: parseFloat(document.getElementById('foodCarbs').value),
-                    fat: parseFloat(document.getElementById('foodFat').value)
-                };
-                
-                // Add food
-                addFood(food);
-                
-                // Reset form
-                this.reset();
-                document.getElementById('foodName').focus();
-            });
-            
-            document.getElementById('clearLogBtn').addEventListener('click', clearFoodLog);
-            
-            // Update time display and check for reset every minute
-            updateTimeDisplay();
-            setInterval(updateTimeDisplay, 60000);
-        });
-    </script>
-</body>
-</html>
+        // Initialize the app
+        init();
